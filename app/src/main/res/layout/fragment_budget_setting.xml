@@ -1,0 +1,74 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#171b27">
+
+    <!-- Tiêu đề -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Set Monthly Budget"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <!-- CardView chứa form nhập ngân sách -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Nhãn nhập ngân sách -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter your monthly budget"
+                android:textColor="#555555"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Ô nhập ngân sách -->
+            <EditText
+                android:id="@+id/budgetEditText"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:minHeight="48dp"
+                android:padding="12dp"
+                android:hint="e.g. 5000"
+                android:inputType="numberDecimal"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Button lưu ngân sách -->
+            <Button
+                android:id="@+id/saveBudgetButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Budget"
+                android:backgroundTint="@color/green"
+                android:layout_marginTop="24dp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Lời nhắc nhỏ -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Manage your monthly spending wisely!"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+</LinearLayout>

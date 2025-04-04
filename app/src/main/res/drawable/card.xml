@@ -1,0 +1,29 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Bo tròn nền -->
+    <item>
+            <shape android:shape="rectangle">
+            <corners android:radius="16dp" /> <!-- Độ bo tròn góc -->
+        </shape>
+    </item>
+
+    <!-- Hình ảnh nền -->
+    <item>
+        <bitmap
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:src="@drawable/card_img"
+            android:tileMode="disabled" />
+    </item>
+
+    <corners
+        android:topLeftRadius="16dp"
+        android:topRightRadius="16dp"
+        android:bottomLeftRadius="8dp"
+        android:bottomRightRadius="8dp" />
+
+</layer-list>
+
+
+
+
