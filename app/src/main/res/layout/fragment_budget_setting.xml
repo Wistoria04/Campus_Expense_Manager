@@ -1,0 +1,102 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/gradient_background">
+
+    <ImageView
+        android:id="@+id/illustration"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="Sign Up Illustration"
+        android:src="@drawable/set_budget"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="24dp"
+        android:letterSpacing="0.02"
+        android:shadowColor="#40000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4"
+        android:text="Set Monthly Budget"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="#FFFFFF">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter your monthly budget"
+                android:textColor="#757575"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_marginBottom="12dp" />
+
+            <EditText
+                android:id="@+id/budgetEditText"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:minHeight="56dp"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:hint="e.g. 5000"
+                android:inputType="numberDecimal"
+                android:textColor="#212121"
+                android:textColorHint="#B0BEC5"
+                android:textSize="18sp"
+                android:background="@drawable/edittext_background"
+                android:drawablePadding="12dp"
+                android:layout_marginBottom="20dp"
+                android:drawableStart="@drawable/ic_currency_small"/>
+
+            <Button
+                android:id="@+id/saveBudgetButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Save Budget"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/modern_button_background"
+                android:backgroundTint="@color/green"
+                android:elevation="4dp"
+                android:layout_marginTop="24dp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Lời nhắc nhỏ -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Manage your monthly spending wisely!"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-light"
+        android:alpha="0.9"
+        android:textStyle="bold"/>
+</LinearLayout>

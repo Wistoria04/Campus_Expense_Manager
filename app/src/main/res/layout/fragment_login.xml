@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="@drawable/gradient_background">
+
+    <!-- Financial App Illustration -->
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="Financial Illustration"
+        android:src="@drawable/financial_illustration"
+        tools:ignore="HardcodedText" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginHorizontal="10dp"
+        android:elevation="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/TextView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Login"
+                android:textColor="#000000"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Password"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:text="Login" />
+
+            <Button
+                android:id="@+id/goto_register_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:text="Register" />
+
+            <Button
+                android:id="@+id/goto_change_password_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:text="Forgot Password?"
+                android:visibility="visible" />
+
+            <!-- OR Divider -->
+            <LinearLayout
+                android:id="@+id/or_divider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp"
+                android:gravity="center">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:layout_weight="1"
+                    android:background="#000000" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OR"
+                    android:layout_marginHorizontal="10dp"
+                    tools:ignore="HardcodedText" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:layout_weight="1"
+                    android:background="#000000" />
+            </LinearLayout>
+
+            <!-- Social Media Login -->
+            <LinearLayout
+                android:id="@+id/social_media_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp"
+                android:gravity="center">
+
+                <ImageButton
+                    android:id="@+id/facebookButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_facebook"
+                    android:background="@android:color/transparent"
+                    android:layout_marginHorizontal="10dp"
+                    android:contentDescription="Facebook Login"
+                    android:scaleType="centerCrop"
+                    android:padding="0dp"/>
+
+                <ImageButton
+                    android:id="@+id/tiktok_login"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_tiktok"
+                    android:background="@android:color/transparent"
+                    android:layout_marginHorizontal="10dp"
+                    android:contentDescription="TikTok Login"
+                    android:scaleType="centerCrop"
+                    android:padding="0dp"
+                    tools:ignore="HardcodedText" />
+
+                <ImageButton
+                    android:id="@+id/instagram_login"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_instagram"
+                    android:background="@android:color/transparent"
+                    android:layout_marginHorizontal="10dp"
+                    android:contentDescription="Instagram Login"
+                    android:scaleType="centerCrop"
+                    android:padding="0dp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
