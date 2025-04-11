@@ -64,7 +64,7 @@
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="12dp"
                 android:hint="e.g. 5000"
-                android:inputType="numberDecimal"
+                android:inputType="number"
                 android:textColor="#212121"
                 android:textColorHint="#B0BEC5"
                 android:textSize="18sp"

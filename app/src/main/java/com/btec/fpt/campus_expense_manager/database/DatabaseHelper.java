@@ -67,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ")";
         db.execSQL(CREATE_TRANSACTION_TABLE);
 
-        // Create user table
+//         Create user table
 //        String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
 //                + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 //                + COLUMN_FIRST_NAME + " TEXT, "
