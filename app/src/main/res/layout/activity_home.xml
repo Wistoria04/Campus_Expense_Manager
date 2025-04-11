@@ -14,19 +14,9 @@
     <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+        style="@style/RippleEffect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@drawable/modern_bottom_nav_background"
-        android:elevation="8dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@drawable/bottom_nav_icon_tint"
-        app:itemTextColor="@drawable/bottom_nav_text_tint"
-        app:itemRippleColor="#26B0BEC5"
-        app:labelVisibilityMode="labeled"
-        app:itemIconSize="24dp"
-        app:itemBackground="@drawable/bottom_nav_item_background"
-        app:itemHorizontalTranslationEnabled="false"/>
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navigation_menu"/>
 </FrameLayout>

@@ -3,6 +3,8 @@ package com.btec.fpt.campus_expense_manager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
@@ -34,26 +36,35 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Show LoginFragment by default
+        // Show HomeFragment by default
         loadFragment(new HomeFragment());
 
-        // Ánh xạ BottomNavigationView
+        // Initialize BottomNavigationView
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        // Xử lý sự kiện khi người dùng chọn mục
+        // Handle tab selection with animations
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
-            if (item.getItemId() == R.id.nav_home) {
-                selectedFragment = new HomeFragment();
-            } else if (item.getItemId() == R.id.nav_expense_tracking) {
-                selectedFragment = new AddExpenseFragment();
-            } else if (item.getItemId() == R.id.nav_budget_setting){
-                selectedFragment = new SetBudgetFragment();
-            } else if (item.getItemId() == R.id.nav_displayExpense) {
-                selectedFragment = new DisplayExpenseFragment();
-            } else if (item.getItemId() == R.id.nav_setting) {
-                selectedFragment = new SettingFragment();
-            }if (selectedFragment != null) {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    selectedFragment = new HomeFragment();
+                    break;
+                case R.id.nav_expense_tracking:
+                    selectedFragment = new AddExpenseFragment();
+                    break;
+                case R.id.nav_budget_setting:
+                    selectedFragment = new SetBudgetFragment();
+                    break;
+                case R.id.nav_displayExpense:
+                    selectedFragment = new DisplayExpenseFragment();
+                    break;
+                case R.id.nav_setting:
+                    selectedFragment = new SettingFragment();
+                    break;
+            }
+
+            if (selectedFragment != null) {
+                applyTabTransitionEffect();
                 loadFragment(selectedFragment);
             }
             return true;
@@ -61,9 +72,21 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    private void applyTabTransitionEffect() {
+        View fragmentContainer = findViewById(R.id.fragment_container);
+        TranslateAnimation slideAnimation = new TranslateAnimation(
+            TranslateAnimation.RELATIVE_TO_PARENT, 1.0f,
+            TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+            TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+            TranslateAnimation.RELATIVE_TO_PARENT, 0.0f
+        );
+        slideAnimation.setDuration(300);
+        fragmentContainer.startAnimation(slideAnimation);
+    }
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
