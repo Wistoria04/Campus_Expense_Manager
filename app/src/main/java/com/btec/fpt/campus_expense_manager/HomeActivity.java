@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.btec.fpt.campus_expense_manager.fragments.AddExpenseFragment;
 import com.btec.fpt.campus_expense_manager.fragments.DisplayExpenseFragment;
@@ -23,61 +22,43 @@ import com.btec.fpt.campus_expense_manager.fragments.SetBudgetFragment;
 import com.btec.fpt.campus_expense_manager.fragments.SettingFragment;
 import com.btec.fpt.campus_expense_manager.models.Item;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
-    private ViewPager2 viewPager;
-    private TabLayout tabLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Initialize ViewPager2 and TabLayout
-        viewPager = findViewById(R.id.view_pager);
-        tabLayout = findViewById(R.id.tab_layout);
+        // Show LoginFragment by default
+        loadFragment(new HomeFragment());
 
-        // Set up adapter for ViewPager2
-        viewPager.setAdapter(new FragmentStateAdapter(this) {
-            @Override
-            public int getItemCount() {
-                return 4; // Number of tabs
-            }
+        // Ánh xạ BottomNavigationView
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-            @Override
-            public Fragment createFragment(int position) {
-                switch (position) {
-                    case 0: return new HomeFragment();
-                    case 1: return new AddExpenseFragment();
-                    case 2: return new SetBudgetFragment();
-                    case 3: return new SettingFragment();
-                    default: return new HomeFragment();
-                }
+        // Xử lý sự kiện khi người dùng chọn mục
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            if (item.getItemId() == R.id.nav_home) {
+                selectedFragment = new HomeFragment();
+            } else if (item.getItemId() == R.id.nav_expense_tracking) {
+                selectedFragment = new AddExpenseFragment();
+            } else if (item.getItemId() == R.id.nav_budget_setting){
+                selectedFragment = new SetBudgetFragment();
+            } else if (item.getItemId() == R.id.nav_displayExpense) {
+                selectedFragment = new DisplayExpenseFragment();
+            } else if (item.getItemId() == R.id.nav_setting) {
+                selectedFragment = new SettingFragment();
+            }if (selectedFragment != null) {
+                loadFragment(selectedFragment);
             }
+            return true;
         });
 
-        // Attach TabLayout with ViewPager2
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            switch (position) {
-                case 0: tab.setText("Home"); break;
-                case 1: tab.setText("Add Expense"); break;
-                case 2: tab.setText("Budget"); break;
-                case 3: tab.setText("Settings"); break;
-            }
-        }).attach();
-
-        // Add zoom-in/out animation for tab selection
-        viewPager.setPageTransformer((page, position) -> {
-            float scale = Math.max(0.85f, 1 - Math.abs(position));
-            page.setScaleX(scale);
-            page.setScaleY(scale);
-            page.setAlpha(scale);
-        });
     }
 
 
