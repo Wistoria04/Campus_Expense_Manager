@@ -1,11 +1,13 @@
 package com.btec.fpt.campus_expense_manager.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 
 public class ManageCategoryFragment extends Fragment {
 
-    private Button addCategoryButton;
+    private Button addCategoryButton, deleteCategoryButton, updateCategoryButton;
     private ListView categoryListView;
     private ArrayList<Category> categoryList;
     private ArrayAdapter<String> categoryAdapter;
@@ -34,6 +36,7 @@ public class ManageCategoryFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,6 +44,8 @@ public class ManageCategoryFragment extends Fragment {
 
         addCategoryButton = view.findViewById(R.id.addCategoryButton);
         categoryListView = view.findViewById(R.id.categoryListView);
+        deleteCategoryButton = view.findViewById(R.id.delete_button);
+        updateCategoryButton = view.findViewById(R.id.update_button);
 
         dbHelper = new DatabaseHelper(getContext());
 
@@ -50,6 +55,30 @@ public class ManageCategoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 showAddCategoryDialog();
+            }
+        });
+
+        // Set up long click listener for category selection
+        categoryListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                showDeleteConfirmationDialog(position);
+                return true;
+            }
+        });
+
+        deleteCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // This button can be used for alternative deletion method if needed
+                Toast.makeText(getContext(), "Long press a category to delete", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        updateCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Update functionality to be implemented
             }
         });
 
@@ -77,12 +106,11 @@ public class ManageCategoryFragment extends Fragment {
         final EditText categoryNameEditText = dialogView.findViewById(R.id.categoryNameEditText);
 
         builder.setTitle("Add New Category")
-                .setPositiveButton("Add", null) // We override this later
+                .setPositiveButton("Add", null)
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         final AlertDialog dialog = builder.create();
 
-        // Override the "Add" button click to prevent auto-closing on invalid input
         dialog.setOnShowListener(dialogInterface -> {
             Button addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             addButton.setOnClickListener(v -> {
@@ -98,7 +126,7 @@ public class ManageCategoryFragment extends Fragment {
                 if (isInserted) {
                     Toast.makeText(getContext(), "Category added successfully!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
-                    loadCategories(); // Refresh the list
+                    loadCategories();
                 } else {
                     Toast.makeText(getContext(), "Category already exists or failed to add", Toast.LENGTH_SHORT).show();
                 }
@@ -106,5 +134,24 @@ public class ManageCategoryFragment extends Fragment {
         });
 
         dialog.show();
+    }
+
+    private void showDeleteConfirmationDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Delete Category")
+                .setMessage("Are you sure you want to delete '" + categoryList.get(position).getName() + "'?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    Category categoryToDelete = categoryList.get(position);
+                    boolean isDeleted = dbHelper.deleteCategory(categoryToDelete.getId());
+
+                    if (isDeleted) {
+                        Toast.makeText(getContext(), "Category deleted successfully!", Toast.LENGTH_SHORT).show();
+                        loadCategories(); // Refresh the list
+                    } else {
+                        Toast.makeText(getContext(), "Failed to delete category", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 }
