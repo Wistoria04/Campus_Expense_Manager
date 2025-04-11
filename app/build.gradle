@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 30
-    namespace 'com.btec.fpt.campus_expense_manager'
     defaultConfig {
         applicationId "com.btec.fpt.campus_expense_manager"
         minSdkVersion 16
