@@ -1,8 +1,7 @@
 package com.btec.fpt.campus_expense_manager.fragments;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -18,143 +18,181 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.btec.fpt.campus_expense_manager.DataStatic;
-import com.btec.fpt.campus_expense_manager.ItemAdapter;
 import com.btec.fpt.campus_expense_manager.MainActivity;
 import com.btec.fpt.campus_expense_manager.R;
 import com.btec.fpt.campus_expense_manager.database.DatabaseHelper;
-import com.btec.fpt.campus_expense_manager.entities.Category;
+import com.btec.fpt.campus_expense_manager.entities.Transaction;
 import com.btec.fpt.campus_expense_manager.models.BalanceInfor;
-import com.btec.fpt.campus_expense_manager.models.Item;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment  extends Fragment {
+public class HomeFragment extends Fragment {
+    private DatabaseHelper databaseHelper;
+    private TextView tvFullName, tvBalance, tvBudget, tvHello;
+    private RecyclerView recyclerView;
+    private TransactionAdapter transactionAdapter;
+    private List<Transaction> transactionList;
 
-
-    public  HomeFragment(){
-
+    public HomeFragment() {
     }
 
-    DatabaseHelper databaseHelper = null;
-
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         databaseHelper = new DatabaseHelper(getContext());
+        tvFullName = view.findViewById(R.id.tvFullname);
+        tvBalance = view.findViewById(R.id.tvBalance);
+        tvBudget = view.findViewById(R.id.tvBudget);
+        tvHello = view.findViewById(R.id.tv_name);
+        recyclerView = view.findViewById(R.id.recyclerView);
 
-        TextView tvFullName = view.findViewById(R.id.tvFullname);
-        TextView tvBalance = view.findViewById(R.id.tvBalance);
-        Button btnChart = view.findViewById(R.id.btnChart);
-        Button btnCategory = view.findViewById(R.id.btnAddCategory);
-
-
-
-        TextView tvHello = view.findViewById(R.id.tv_name);
-
-
-
-        SharedPreferences sharedPreferences =  getActivity().getSharedPreferences("UserPrefs", MODE_PRIVATE);
-
-        // Lay ve thong tin mat khau va email
-
-        String email = sharedPreferences.getString("email", null);
-        String password = sharedPreferences.getString("password", null); // Retrieve the hashed/encrypted version
-
-
-        DataStatic.email  = email;
-        DataStatic.password = password;
-        BalanceInfor balanceInfor = databaseHelper.getBalanceFromEmail(email);
-
-        tvFullName.setText(balanceInfor.getFirstName() +" " + balanceInfor.getLastName());
-        tvBalance.setText(balanceInfor.getBalance() +"");
-        tvHello.setText("Hello " + balanceInfor.getFirstName());
-
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-
-        // Set LayoutManager for RecyclerView (Linear Layout)
+        // Setup RecyclerView for transactions
+        transactionList = new ArrayList<>();
+        transactionAdapter = new TransactionAdapter(transactionList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(transactionAdapter);
 
-        // Initialize item list
-        List<Item> itemList = new ArrayList<>();
+        // Load user info and budget
+        loadUserInfo();
+        loadBudget();
+        loadTransactions();
 
-        List<Category> categoryList = databaseHelper.getAllCategoryByEmail(email);
-
-        for(Category category: categoryList){
-
-            itemList.add(new Item(R.drawable.ic_coin, category.getName()));
-
-        }
-
-        // Add data to the list (image resource + text)
-//        itemList.add(new Item(R.drawable.item1, "Item 1"));
-//        itemList.add(new Item(R.drawable.item2, "Item 2"));
-//        itemList.add(new Item(R.drawable.item3, "Item 3"));
-//
-//        // Add data to the list (image resource + text)
-//        itemList.add(new Item(R.drawable.item4, "Item 4"));
-//        itemList.add(new Item(R.drawable.item5, "Item 5"));
-//        itemList.add(new Item(R.drawable.item6, "Item 6"));
-
-        // Initialize the adapter and set it to the RecyclerView
-        ItemAdapter itemAdapter = new ItemAdapter(getContext(), itemList);
-        recyclerView.setAdapter(itemAdapter);
-
-
+        // Buttons
         Button btnLogout = view.findViewById(R.id.btnLogout);
-//        Button btnAddExpense = view.findViewById(R.id.btnAddExpense);
-        Button btnDisplayAll = view.findViewById(R.id.btnDisplay);
-        @SuppressLint("CutPasteId") Button btnAddCategory = view.findViewById(R.id.btnAddCategory);
+        Button btnDisplay = view.findViewById(R.id.btnDisplay);
+        Button btnAddCategory = view.findViewById(R.id.btnAddCategory);
+        Button btnChart = view.findViewById(R.id.btnChart);
 
         btnLogout.setOnClickListener(v -> handleLogout());
 
-        btnChart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnDisplay.setOnClickListener(v -> loadFragment(new DisplayExpenseFragment(), true));
 
+        btnAddCategory.setOnClickListener(v -> loadFragment(new ManageCategoryFragment(), true));
 
-                loadFragment(new ChartDisplayFragment());
+        btnChart.setOnClickListener(v -> loadFragment(new ChartDisplayFragment(), true));
 
-            }
-        });
-
-
-        btnCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                loadFragment(new ManageCategoryFragment());
-
-            }
-        });
-
-
-        return  view;
-
+        return view;
     }
 
+    private void loadUserInfo() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String email = sharedPreferences.getString("email", null);
+        DataStatic.email = email;
+
+        if (email != null) {
+            BalanceInfor balanceInfor = databaseHelper.getBalanceFromEmail(email);
+            if (balanceInfor != null) {
+                String fullName = balanceInfor.getFirstName() + " " + balanceInfor.getLastName();
+                tvFullName.setText(fullName);
+                tvHello.setText("Hello " + balanceInfor.getFirstName());
+            }
+        }
+    }
+
+    private void loadBudget() {
+        SharedPreferences prefs = requireActivity().getSharedPreferences("BudgetPrefs", Context.MODE_PRIVATE);
+        float budget = prefs.getFloat("monthly_budget", 0);
+        DecimalFormat df = new DecimalFormat("#,###.## $");
+        tvBudget.setText(df.format(budget));
+        tvBalance.setText(df.format(budget)); // Initial balance
+    }
+
+    private void loadTransactions() {
+        transactionList.clear();
+        List<Transaction> transactions = databaseHelper.getAllTransactionsByEmail(DataStatic.email);
+        transactionList.addAll(transactions);
+        transactionAdapter.notifyDataSetChanged();
+
+        // Calculate remaining budget based on Outcome transactions
+        float totalOutcome = 0;
+        for (Transaction transaction : transactions) {
+            if (transaction.getType() == 0) { // Outcome
+                totalOutcome += transaction.getAmount();
+            }
+        }
+        SharedPreferences prefs = requireActivity().getSharedPreferences("BudgetPrefs", Context.MODE_PRIVATE);
+        float budget = prefs.getFloat("monthly_budget", 0);
+        float remainingBudget = budget - totalOutcome;
+        DecimalFormat df = new DecimalFormat("#,###.## $");
+        tvBalance.setText(df.format(remainingBudget));
+    }
 
     private void handleLogout() {
-        // Clear session details
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
 
-        // Navigate back to LoginFragment
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
-        requireActivity().finish(); // Prevent returning to the Home screen
+        requireActivity().finish();
     }
 
-
-    private void loadFragment(Fragment fragment) {
+    private void loadFragment(Fragment fragment, boolean isSwipeRight) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        if (isSwipeRight) {
+            transaction.setCustomAnimations(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+            );
+        }
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserInfo();
+        loadBudget();
+        loadTransactions();
+    }
+
+    private class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
+        private List<Transaction> transactions;
+
+        public TransactionAdapter(List<Transaction> transactions) {
+            this.transactions = transactions;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_transactions, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            Transaction transaction = transactions.get(position);
+            holder.tvDate.setText(transaction.getDate());
+            holder.tvCategory.setText(transaction.getCategory());
+            holder.tvAmount.setText("$" + transaction.getAmount());
+            holder.tvType.setText(transaction.getType() == 0 ? "Outcome" : "Income");
+            holder.ivIcon.setImageResource(transaction.getType() == 0 ? R.drawable.ic_outcome : R.drawable.ic_income);
+        }
+
+        @Override
+        public int getItemCount() {
+            return transactions.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView tvDate, tvCategory, tvAmount, tvType;
+            ImageView ivIcon;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                tvDate = itemView.findViewById(R.id.tvDate);
+                tvCategory = itemView.findViewById(R.id.tvCategory);
+                tvAmount = itemView.findViewById(R.id.tvAmount);
+                tvType = itemView.findViewById(R.id.tvType);
+                ivIcon = itemView.findViewById(R.id.ivIcon);
+            }
+        }
     }
 }

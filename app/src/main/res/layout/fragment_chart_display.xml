@@ -5,17 +5,46 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="@drawable/gradient_background"
+    android:paddingBottom="72dp"
     tools:context=".fragments.ChartDisplayFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Expense by Category"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pie Chart"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp"/>
 
     <com.btec.fpt.campus_expense_manager.views.PieChartView
         android:id="@+id/pieChartView"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="350dp"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bar Chart"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp"/>
 
     <com.btec.fpt.campus_expense_manager.views.BarChartView
         android:id="@+id/barChartView"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="400dp"
+        android:elevation="4dp"
+        android:padding="16dp"/>
 
 </LinearLayout>

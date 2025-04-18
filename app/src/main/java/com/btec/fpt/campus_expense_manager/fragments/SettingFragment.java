@@ -5,134 +5,75 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.btec.fpt.campus_expense_manager.DataStatic;
-import com.btec.fpt.campus_expense_manager.ItemAdapter;
 import com.btec.fpt.campus_expense_manager.MainActivity;
 import com.btec.fpt.campus_expense_manager.R;
 import com.btec.fpt.campus_expense_manager.database.DatabaseHelper;
-import com.btec.fpt.campus_expense_manager.entities.Category;
 import com.btec.fpt.campus_expense_manager.models.BalanceInfor;
-import com.btec.fpt.campus_expense_manager.models.Item;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class SettingFragment extends Fragment {
 
+    private DatabaseHelper databaseHelper;
+    private TextView tvHello;
+    private Button btnLogout, btnChangePass;
 
     public SettingFragment() {
         // Required empty public constructor
     }
 
-    DatabaseHelper databaseHelper = null;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
 
+        // Initialize DatabaseHelper
         databaseHelper = new DatabaseHelper(getContext());
 
-//        TextView tvFullName = view.findViewById(R.id.tvFullname);
-//        TextView tvBalance = view.findViewById(R.id.tvBalance);
+        // Initialize UI components
+        tvHello = view.findViewById(R.id.tv_name);
+        btnLogout = view.findViewById(R.id.btnlogout);
+        btnChangePass = view.findViewById(R.id.btnchangepass);
 
-
-
-        TextView tvHello = view.findViewById(R.id.tv_name);
-
-
-
-        SharedPreferences sharedPreferences =  getActivity().getSharedPreferences("UserPrefs", MODE_PRIVATE);
-
-        // Lay ve thong tin mat khau va email
-
+        // Get email and password from SharedPreferences
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String email = sharedPreferences.getString("email", null);
-        String password = sharedPreferences.getString("password", null); // Retrieve the hashed/encrypted version
+        String password = sharedPreferences.getString("password", null);
 
-
-        DataStatic.email  = email;
+        // Set global DataStatic values
+        DataStatic.email = email;
         DataStatic.password = password;
+
+        // Handle case where email is not found in SharedPreferences
+        if (email == null) {
+            Toast.makeText(getContext(), "User not logged in. Redirecting to login...", Toast.LENGTH_LONG).show();
+            handleLogout();
+            return view;
+        }
+
+        // Get user balance information
         BalanceInfor balanceInfor = databaseHelper.getBalanceFromEmail(email);
+        if (balanceInfor != null && balanceInfor.getFirstName() != null) {
+            tvHello.setText("Hello " + balanceInfor.getFirstName());
+        } else {
+            tvHello.setText("Hello User");
+            Toast.makeText(getContext(), "User information not found. Please update your profile.", Toast.LENGTH_LONG).show();
+        }
 
-//        tvFullName.setText(balanceInfor.getFirstName() +" " + balanceInfor.getLastName());
-//        tvBalance.setText(balanceInfor.getBalance() +"");
-        tvHello.setText("Hello " + balanceInfor.getFirstName());
-
-//        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-//
-//        // Set LayoutManager for RecyclerView (Linear Layout)
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//
-//        // Initialize item list
-//        List<Item> itemList = new ArrayList<>();
-//
-//        List<Category> categoryList = databaseHelper.getAllCategoryByEmail(email);
-//
-//        for(Category category: categoryList){
-//
-//            itemList.add(new Item(R.drawable.item1, category.getName()));
-//
-//        }
-
-        // Add data to the list (image resource + text)
-//        itemList.add(new Item(R.drawable.item1, "Item 1"));
-//        itemList.add(new Item(R.drawable.item2, "Item 2"));
-//        itemList.add(new Item(R.drawable.item3, "Item 3"));
-//
-//        // Add data to the list (image resource + text)
-//        itemList.add(new Item(R.drawable.item4, "Item 4"));
-//        itemList.add(new Item(R.drawable.item5, "Item 5"));
-//        itemList.add(new Item(R.drawable.item6, "Item 6"));
-
-        // Initialize the adapter and set it to the RecyclerView
-//        ItemAdapter itemAdapter = new ItemAdapter(getContext(), itemList);
-//        recyclerView.setAdapter(itemAdapter);
-
-
-        Button btnLogout = view.findViewById(R.id.btnlogout);
-        Button btnChangepass = view.findViewById(R.id.btnchangepass);
-//        Button btnAddExpense = view.findViewById(R.id.btnAddExpense);
-//        Button btnDisplayAll = view.findViewById(R.id.btnDisplay);
-//        Button btnAddCategory = view.findViewById(R.id.btnAddCategory);
-
+        // Set up button listeners
         btnLogout.setOnClickListener(v -> handleLogout());
+        btnChangePass.setOnClickListener(v -> loadFragment(new ChangePasswordFragment()));
 
-        btnChangepass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                loadFragment(new ChangePasswordFragment());
-
-            }
-        });
-
-//        btnDisplayAll.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                loadFragment(new DisplayExpenseFragment());
-//
-//            }
-//        });
-//
-//
-       return  view;
-
+        return view;
     }
 
     private void handleLogout() {
@@ -142,12 +83,11 @@ public class SettingFragment extends Fragment {
         editor.clear();
         editor.apply();
 
-        // Navigate back to LoginFragment
+        // Navigate back to MainActivity (Login screen)
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
         requireActivity().finish(); // Prevent returning to the Home screen
     }
-
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
